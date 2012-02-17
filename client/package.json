@@ -1,0 +1,16 @@
+{
+  "name": "slogger-client",
+  "version": "0.0.1",
+  "author": "Ryan Olds <ryanrolds@gmail.com>",
+  "main": "./index",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha tests/*.test.js"
+  },
+  "dependencies": {
+    "socket.io-client": "= 0.8.7"
+  },
+  "devDependencies": {
+    "mocha": "= 0.12.0",
+    "should": "= 0.5.1"
+  }
+}
