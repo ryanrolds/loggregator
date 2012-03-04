@@ -8,7 +8,7 @@ Real-time file (and streams at some point) monitoring.
 IMHO, log.io is too invasive, *nix specific, and isn't easily deployable/packageble. It also doesn't
 allow the monitoring of stdout, stderr. The point of this project is crate a easy to 
 drop in module that takes a url for the aggregator service, a list of things to watch, 
-and a key. The Collector and aggregator handle the rest.
+and a key. The Collector and Aggregator handle the rest.
 
 ## Usage ##
 
@@ -16,7 +16,7 @@ and a key. The Collector and aggregator handle the rest.
 
 #### Install ####
 
-    npm install aggregator;
+    npm install slogger;
 
 #### Using ####
 
