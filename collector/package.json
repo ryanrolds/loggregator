@@ -4,16 +4,16 @@
   "author": "Ryan Olds <ryanrolds@gmail.com>",
   "main": "./index",
   "scripts": {
-    "test": "./node_modules/.bin/mocha tests/*.test.js"
+    "test": "./node_modules/.bin/mocha -R spec -r should tests/*.test.js"
   },
   "dependencies": {
-    "socket.io-client": "= 0.8.7",
+    "async": "",
+    "socket.io-client": "",
     "filechanges": "https://github.com/ryanrolds/filechanges/tarball/master"
   },
   "devDependencies": {
-    "mocha": "= 0.12.0",
-    "should": "= 0.5.1",
-    "socket.io": "",
-    "express": ""
+    "mocha": "",
+    "should": "",
+    "socket.io": ""
   }
 }

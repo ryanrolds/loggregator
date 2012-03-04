@@ -4,25 +4,17 @@ var io = require('socket.io-client');
 var FileChanges = require('filechanges');
 
 module.exports = function() {
-  var Collector = function Collector(files, url, key) {
-    var conn = io.connect(url);
-    this.conn = conn;
-    
+  var Collector = function Collector(files, url, key, callback) {
+    var conn = this.conn = io.connect(url);    
     var watchers = {};
-
     var that = this;
-    conn.on('connect', function() {
-      var data = {
-        'hostname': os.hostname(),
-        'files': files,
-        'key': key
-      };
 
-      conn.emit('register', data, function() {
-        console.log(arguments);
-      });
+    // On connect register with server
+    conn.on('connect', function() {
+      that.register(callback);
     });
 
+    // Start monitoring of a file/stream
     conn.on('start', function(data, callback) {
       if(!watchers[data.file]) {
         watchers[data.file] = new FileChanges(files[data.file]);
@@ -32,20 +24,41 @@ module.exports = function() {
             'lines': lines
           });
         });
+      }
 
-        if(callback) {
-          callback('started')
-        }
+      if(callback) {
+        callback(null, 'started')
       }
     });
 
-    conn.on('stop', function(data) {
+    // Stop monitoring of a file/stream
+    conn.on('stop', function(data, callback) {
       if(watchers[data.file]) {
         watchers[data.file].unwatch();
+      }
+
+      if(callback) {
+        callback(null, 'stopped')
       }
     });
   }; 
 
+  Collector.prototype.register = function(callback) {
+    var data = {
+      'hostname': os.hostname(),
+      'files': this.files,
+      'key': this.key
+    };
+
+    // Register with aggregator
+    this.conn.emit('register', data, function() {
+      if(callback) {
+        callback(null, true);
+      }
+    });
+  };
+
+  // Unregister with aggregator
   Collector.prototype.unregister = function() {
     var data = {
       'hostname': os.hostname()
