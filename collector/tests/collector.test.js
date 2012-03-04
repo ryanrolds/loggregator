@@ -1,11 +1,12 @@
 
 require('should');
 
-var aggregatorShim = require('./lib/aggregator');
+var aggregatorShim = require('./lib/aggregator')();
+
 
 var Collector = require('../');
 var host = 'localhost';
-var port = 9001;
+var port = 9069;
 
 var streams = {
   'accesslog': './assets/access.log'

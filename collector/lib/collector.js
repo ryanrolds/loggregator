@@ -6,7 +6,9 @@ module.exports = function() {
   var Collector = function Collector(files, url, key) {
     var conn = io.connect(url);
     conn.on('connect', function() {
-      //conn.emit('register', funct
+      conn.emit('register', data, function() {
+
+      });
     });
   }; 
 
