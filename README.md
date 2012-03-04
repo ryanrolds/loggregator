@@ -5,10 +5,10 @@ Real-time file (and streams at some point) monitoring.
 
 ## Why? ##
 
-IMHO, log.io is too invasive. It also doesn't allow the monitoring of stdout, stderr. 
-The point of this project is crate a easy to drop in module that takes a url for the 
-aggregator service, a list of things to watch, and a key. The Collector and aggregator
-handle the rest.
+IMHO, log.io is too invasive, *nix specific, and isn't easily deployable/packageble. It also doesn't
+allow the monitoring of stdout, stderr. The point of this project is crate a easy to 
+drop in module that takes a url for the aggregator service, a list of things to watch, 
+and a key. The Collector and aggregator handle the rest.
 
 ## Usage ##
 
