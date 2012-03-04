@@ -14,8 +14,11 @@ handle the rest.
 
 ### Aggregator ###
 
+#### Install ####
+
     npm install aggregator;
 
+#### Using ####
 
     var Aggregator = require('slogger');
 
@@ -25,8 +28,11 @@ handle the rest.
 
 ### Collector ###
 
+#### Install ####
+
     npm install slogger-collector
 
+#### Using ####
 
     var Collector = require('slogger-collector');
     
