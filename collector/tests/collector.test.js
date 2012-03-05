@@ -13,7 +13,7 @@ describe('slogger', function() {
     var aggregator;
     var client;
     before(function(done) {
-      testHelpers.setup(port, files, key, function(error, agg, cli) {
+      testHelpers.beforeCollector(port, files, key, function(error, agg, cli) {
         aggregator = agg;
         client = cli;
         done();

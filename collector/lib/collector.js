@@ -5,9 +5,11 @@ var FileChanges = require('filechanges');
 
 module.exports = function() {
   var Collector = function Collector(files, url, key, callback) {
-    var conn = this.conn = io.connect(url);    
     var watchers = {};
+    this.key = key;
     var that = this;
+
+    var conn = this.conn = io.connect(url);
 
     // On connect register with server
     conn.on('connect', function() {
@@ -19,7 +21,7 @@ module.exports = function() {
       if(!watchers[data.file]) {
         watchers[data.file] = new FileChanges(files[data.file]);
         watchers[data.file].on('data', function(lines) {
-          conn.emit('lines', {
+          that.conn.emit('lines', {
             'data': Date.UTC,
             'lines': lines
           });
@@ -46,12 +48,21 @@ module.exports = function() {
   Collector.prototype.register = function(callback) {
     var data = {
       'hostname': os.hostname(),
-      'files': this.files,
-      'key': this.key
+      'watchables': this.files,
+      'key': this.key,
+      'type': 'collector'
     };
 
     // Register with aggregator
-    this.conn.emit('register', data, function() {
+    this.conn.emit('register', data, function(error, result) {
+      if(error) {
+        if(callback) {
+          return callback(error);
+        } else {
+          throw error;
+        }
+      }
+
       if(callback) {
         callback(null, true);
       }

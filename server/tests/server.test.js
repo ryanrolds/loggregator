@@ -1,44 +1,38 @@
 
-require('should');
-var io = require('socket.io');
-var socketClient = require('socket.io-client');
+var testHelpers = require('../../common/lib/testHelpers');
 
-var port = 9002;
+var port = 9069;
+var key = 'foobarbaz';
+var watchables = {
+  'accesslog': __dirname + '/assets/access.log'
+};
+
+//var Slogger = require('../')
+//var Collector = require('../../collector');
+//var Browser = require('./libs/mockBrowser');
 
 describe('server', function() {
-  var app = require('express').createServer();
-  var slogger = new require('../')(app, {'key': 'asdf'});
-  app.listen(port);
-
-  it('takes connections', function(done) {
-    var client = socketClient.connect('http://127.0.0.1:' + port);
-    client.on('connect', function() {
-      client.socket.connected.should.be.true;
+  var aggregator;
+  var collector;
+  var browser;
+  before(function(done) {
+    testHelpers.beforeAggregator(port, watchables, key, function(error, agg, coll, bro) {
+      aggregator = agg;
+      collector = coll;
+      browser = bro;
       done();
     });
   });
 
-  it('accepts register', function(done) {
-    var client =  socketClient.connect('http://127.0.0.1:' + port);
-    var os = require('os');
-
-    var message = {
-      'type': 'collector',
-      'hostname': os.hostname(),
-      'pid': process.pid,
-      'osType': os.type(),
-      'platform': os.platform(),
-      'arch': os.arch(),
-      'uptime': os.uptime(),
-      'totalMemory': os.totalmem(),
-      'load': os.loadavg(),
-      'freeMemory': os.freemem(),
-      'cpus': os.cpus()
-    };
-
-    client.emit('register', message, function(data) {
-      console.log(data);
-      done();
-    });
+  it('start watching accesslog', function(done) {
+    browser.watch(
+      {
+        'hostname': 'minecraftserver',
+        'watchable': 'accesslog'
+      },
+      function(error, data) {
+        done();
+      }
+    );
   });
 });

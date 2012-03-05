@@ -4,7 +4,8 @@ var fs = require('fs');
 var async = require('async');
 
 var MockAggregator = require('./mockAggregator');
-var Collector = require('../../');
+var Aggregator = require('../../server');
+var Collector = require('../../collector');
 
 module.exports.writeToFile = function(file, text) {
   fs.open(file, 'a', function(err, fd) {
@@ -21,7 +22,29 @@ module.exports.writeToFile = function(file, text) {
   });
 };
 
-module.exports.setup = function(port, files, key, callback) {
+module.exports.beforeAggregator = function(callback) {
+  async.waterfall(
+    [
+      function(callback) {
+        var slogger = new Slogger(port, key, function() {
+          callback(slogger);
+        });
+      },
+      function(callback) {
+        collector = new Collector(watchables, 'http://localhost:' + port, key, function(error, result) {
+          if(error) {
+            throw error;
+          }
+
+          result.should.be.true;
+          callback(slogger, collector)
+        });
+      }
+    ],
+    callback
+};
+
+module.exports.beforeCollector = function(port, files, key, callback) {
   async.waterfall(
     [
       function(callback) {
