@@ -1,5 +1,5 @@
 
-var testHelpers = require('../../common/lib/testHelpers');
+var testHelpers = require('./lib/testHelpers');
 
 var port = 9069;
 var key = 'foobarbaz';
