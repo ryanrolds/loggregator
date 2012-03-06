@@ -45,6 +45,7 @@ module.exports = function() {
           server.browsers[socket.io] = item;
           bindBrowserEvents.call(server, socket);
         } else {
+          // @TODO need to send an error that can be handled instead
           callback('invalid type');
           return socket.disconnect();
         }
@@ -87,8 +88,11 @@ module.exports = function() {
       callback(null, response);
     });
 
-    socket.on('watch', function(data) {
+    socket.on('watch', function(data, callback) {
+      console.log('asdfasdfasdf');
       // Start watching
+
+      callback(null, 'watching');
     });
 
     socket.on('unwatch', function(data) {

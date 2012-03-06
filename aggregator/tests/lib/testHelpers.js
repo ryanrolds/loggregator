@@ -5,6 +5,7 @@ var async = require('async');
 
 var Aggregator = require('../../');
 var Collector = require('../../../collector');
+var MockMonitor = require('./mockMonitor');
 
 module.exports.writeToFile = function(file, text) {
   fs.open(file, 'a', function(err, fd) {
@@ -27,7 +28,7 @@ module.exports.beforeAggregator = function(port, watchables,  key, callback) {
     [
       function(callback) {
         var aggregator = new Aggregator(port, key, function() {
-          callback(aggregator);
+          callback(null, aggregator);
         });
       },
       function(aggregator, callback) {
@@ -37,12 +38,12 @@ module.exports.beforeAggregator = function(port, watchables,  key, callback) {
           }
 
           result.should.be.true;
-          callback(aggregator, collector)
+          callback(null, aggregator, collector)
         });
       },
-      function(callback) {
-        var browser = new MockBrowser(url, key, function(error, result) {
-
+      function(aggregator, collector, callback) {
+        var monitor = new MockMonitor(url, key, function(error, result) {
+          callback(null, aggregator, collector, monitor);
         });
       }
     ],
