@@ -8,7 +8,7 @@ var files = {
 var port = 9069;
 var key = 'aaaa';
 
-describe('slogger', function() {
+describe('loggregator', function() {
   describe('collector', function() {
     var aggregator;
     var client;
@@ -20,7 +20,7 @@ describe('slogger', function() {
       });
     });
 
-    it('is a slogger collector', function() {
+    it('is a loggregator collector', function() {
       client.should.be.instanceof(Collector);
     });
 

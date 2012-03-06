@@ -1,5 +1,5 @@
 
-# slogger #
+# loggregator #
 
 Real-time file (and streams at some point) monitoring. 
 
@@ -16,11 +16,13 @@ and a key. The Collector and Aggregator handle the rest.
 
 #### Install ####
 
-    npm install slogger;
+This project isn't completed yet and isn't publish yet!
+
+    npm install loggregator;
 
 #### Using ####
 
-    var Aggregator = require('slogger');
+    var Aggregator = require('loggregator');
 
     var port = 9069;
     var key = 'foobarbaz';
@@ -30,11 +32,13 @@ and a key. The Collector and Aggregator handle the rest.
 
 #### Install ####
 
-    npm install slogger-collector
+This project isn't completed yet and isn't publish yet!
+
+    npm install loggregator-collector
 
 #### Using ####
 
-    var Collector = require('slogger-collector');
+    var Collector = require('loggregator-collector');
     
     var watchables = {
       'stdout': true,

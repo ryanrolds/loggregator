@@ -26,18 +26,18 @@ module.exports.beforeAggregator = function(port, watchables,  key, callback) {
   async.waterfall(
     [
       function(callback) {
-        var slogger = new Aggregator(port, key, function() {
-          callback(slogger);
+        var aggregator = new Aggregator(port, key, function() {
+          callback(aggregator);
         });
       },
-      function(callback) {
+      function(aggregator, callback) {
         var collector = new Collector(watchables, url, key, function(error, result) {
           if(error) {
             throw error;
           }
 
           result.should.be.true;
-          callback(slogger, collector)
+          callback(aggregator, collector)
         });
       },
       function(callback) {
