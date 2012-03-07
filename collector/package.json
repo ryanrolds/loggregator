@@ -9,7 +9,7 @@
   "dependencies": {
     "async": "",
     "socket.io-client": "",
-    "filechanges": "https://github.com/ryanrolds/filechanges/tarball/master"
+    "filenotify": ""
   },
   "devDependencies": {
     "mocha": "",

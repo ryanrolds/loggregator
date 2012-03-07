@@ -1,7 +1,7 @@
 
 var os = require('os');
 var io = require('socket.io-client');
-var FileChanges = require('filechanges');
+var FileNotify = require('filenotify');
 
 module.exports = function() {
   var Collector = function Collector(files, url, key, callback) {
@@ -19,7 +19,7 @@ module.exports = function() {
     // Start monitoring of a file/stream
     conn.on('start', function(data, callback) {
       if(!watchers[data.file]) {
-        watchers[data.file] = new FileChanges(files[data.file]);
+        watchers[data.file] = new FileNotify(files[data.file]);
         watchers[data.file].on('data', function(lines) {
           that.conn.emit('lines', {
             'data': Date.UTC,
@@ -36,7 +36,7 @@ module.exports = function() {
     // Stop monitoring of a file/stream
     conn.on('stop', function(data, callback) {
       if(watchers[data.file]) {
-        watchers[data.file].unwatch();
+        watchers[data.file].destroy();
       }
 
       if(callback) {
