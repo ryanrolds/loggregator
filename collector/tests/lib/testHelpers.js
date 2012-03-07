@@ -4,7 +4,7 @@ var fs = require('fs');
 var async = require('async');
 
 var MockAggregator = require('./mockAggregator');
-var Collector = require('../../collector');
+var Collector = require('../../');
 
 module.exports.writeToFile = function(file, text) {
   fs.open(file, 'a', function(err, fd) {
@@ -12,10 +12,10 @@ module.exports.writeToFile = function(file, text) {
       throw err;
     }
 
-    var buffer = new Buffer(5);
+    var buffer = new Buffer(text.length);
     buffer.write(text);
 
-    fs.write(fd, buffer, 0, 5, null, function(error, bytes, buffer) {
+    fs.write(fd, buffer, 0, buffer.length, null, function(error, bytes, buffer) {
       fs.close(fd);
     });
   });

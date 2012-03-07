@@ -1,5 +1,5 @@
 
-var testHelpers = require('./lib/helpers.js');
+var testHelpers = require('./lib/testHelpers.js');
 
 var Collector = require('../');
 var files = {
