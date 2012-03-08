@@ -8,6 +8,7 @@ var io = require('socket.io-client');
 module.exports = function() {
   var MockMonitor = function(url, key, callback) {
     var that = this;
+    this.key = key;
 
     var options = {
       'log level': 1

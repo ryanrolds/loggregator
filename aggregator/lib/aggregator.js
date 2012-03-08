@@ -7,7 +7,7 @@ module.exports = function() {
   var Server = function(port, key, callback) {
     var server = this;
     this.collectors = {};
-    this.browsers = {};
+    this.monitors = {};
 
     var app = express.createServer();
 
@@ -39,11 +39,12 @@ module.exports = function() {
         if(data.type === 'collector') {
           item.hostname = data.hostname;
           item.watchables = data.watchables;
+
           server.collectors[socket.io] = item;
           bindCollectorEvents.call(server, socket);
-        } else if(data.type === 'browser') {
-          server.browsers[socket.io] = item;
-          bindBrowserEvents.call(server, socket);
+        } else if(data.type === 'monitor') {
+          server.monitors[socket.io] = item;
+          bindMonitorEvents.call(server, socket);
         } else {
           // @TODO need to send an error that can be handled instead
           callback('invalid type');
@@ -72,7 +73,7 @@ module.exports = function() {
     });
   };
 
-  var bindBrowserEvents = function(socket) {
+  var bindMonitorEvents = function(socket) {
     var server = this;
     socket.on('listwatchables', function(data, callback) {
       // Get list of items that can watched
@@ -84,12 +85,10 @@ module.exports = function() {
         response.collectors[v.hostname] = Object.keys(v.watchables);
       });
 
-      console.log(response);
       callback(null, response);
     });
 
     socket.on('watch', function(data, callback) {
-      console.log('asdfasdfasdf');
       // Start watching
 
       callback(null, 'watching');
@@ -100,7 +99,7 @@ module.exports = function() {
     });
 
     socket.on('disconnect', function(data) {
-      // Remove from browser and update watcher lists
+      // Remove from monitors and update watcher lists
     });
   };
 
