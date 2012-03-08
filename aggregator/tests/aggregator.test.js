@@ -1,4 +1,6 @@
 
+var os = require('os');
+
 var testHelpers = require('./lib/testHelpers');
 
 var port = 9069;
@@ -6,6 +8,7 @@ var key = 'foobarbaz';
 var watchables = {
   'accesslog': __dirname + '/assets/access.log'
 };
+
 
 describe('server', function() {
   var aggregator;
@@ -20,15 +23,27 @@ describe('server', function() {
     });
   });
 
-  it('start watching accesslog', function(done) {
-    monitor.watch(
-      {
-        'hostname': 'minecraftserver',
-        'watchable': 'accesslog'
-      },
-      function(error, data) {
-        done();
-      }
-    );
+  it('should support watching accesslog', function(done) {
+    var data = {
+      'hostname': os.hostname(),
+      'watchable': Object.keys(watchables)[0]
+    };
+
+    var callback = function(error, data) {
+      data.should.be.true;
+      done();
+    };
+
+    monitor.watch(data, callback);
+  });
+
+  it('should get data event for accesslog', function(done) {
+    var listener = function(data) {
+      done();
+    };
+
+    monitor.once('lines', listener);
+
+    testHelpers.writeToFile(watchables.accesslog, 'blah\n');
   });
 });

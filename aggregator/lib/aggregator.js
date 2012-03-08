@@ -7,6 +7,7 @@ module.exports = function() {
   var Server = function(port, key, callback) {
     var server = this;
     this.collectors = {};
+    this.hostnames = [];
     this.monitors = {};
 
     var app = express.createServer();
@@ -40,11 +41,12 @@ module.exports = function() {
           item.hostname = data.hostname;
           item.watchables = data.watchables;
 
-          server.collectors[socket.io] = item;
-          bindCollectorEvents.call(server, socket);
+          server.collectors[socket.id] = item;
+          server.hostnames[item.hostname] = item;
+          _bindCollectorEvents.call(server, socket);
         } else if(data.type === 'monitor') {
-          server.monitors[socket.io] = item;
-          bindMonitorEvents.call(server, socket);
+          server.monitors[socket.id] = item;
+          _bindMonitorEvents.call(server, socket);
         } else {
           // @TODO need to send an error that can be handled instead
           callback('invalid type');
@@ -58,13 +60,19 @@ module.exports = function() {
     this.io = io;
   }
 
-  var bindCollectorEvents = function(socket) {
+  var _bindCollectorEvents = function(socket) {
     var server = this;
     socket.on('unregister', function() {
       // Remove socket from listeners
     });
     
-    socket.on('lines', function(lines) {
+    socket.on('lines', function(data) {
+      var collector = server.collectors[socket.id];
+
+      collector.watchables[data.watchable].watchers.forEach(function(socket) {
+        data.hostname = collector.hostname;
+        socket.emit('lines', data);
+      });
       // Sent lines out listeners
     });
 
@@ -73,7 +81,7 @@ module.exports = function() {
     });
   };
 
-  var bindMonitorEvents = function(socket) {
+  var _bindMonitorEvents = function(socket) {
     var server = this;
     socket.on('listwatchables', function(data, callback) {
       // Get list of items that can watched
@@ -89,9 +97,7 @@ module.exports = function() {
     });
 
     socket.on('watch', function(data, callback) {
-      // Start watching
-
-      callback(null, 'watching');
+      _addWatcher.call(server, data.hostname, data.watchable, this, callback);
     });
 
     socket.on('unwatch', function(data) {
@@ -101,6 +107,44 @@ module.exports = function() {
     socket.on('disconnect', function(data) {
       // Remove from monitors and update watcher lists
     });
+  };
+
+  var _addWatcher = function(hostname, toWatch, socket, callback) {
+    if(!this.hostnames[hostname]) {
+      throw new Error('Unknown collector');
+    }
+
+    var collector = this.hostnames[hostname];
+
+    if(!collector.watchables[toWatch]) {
+      throw new Error('Unknown watchable');
+    }
+
+    var watchable = collector.watchables[toWatch];
+
+    if(!watchable.watchers) {
+      watchable.watchers = [];
+    }
+
+    if(watchable.watchers.indexOf(socket) === -1) {
+      watchable.watchers.push(socket);
+    }
+
+    if(watchable.watchers.length === 1) {
+      var data = {
+        'file': toWatch
+      };
+
+      collector.socket.emit('start', data, function(error, result) {
+        callback(null, true);
+      });
+    } else {
+      callback(null, true);
+    }
+  };
+
+  var _removeWatcher = function(hostname, watchable, socket) {
+
   };
 
   return Server;

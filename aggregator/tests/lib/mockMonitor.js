@@ -24,7 +24,13 @@ module.exports = function() {
     conn.on('disconnect', function() {
       // @TODO need to handle disconnect
     });
+
+    conn.on('lines', function(data) {
+      that.emit('lines', data);
+    });
   };
+
+  util.inherits(MockMonitor, events.EventEmitter);
 
   MockMonitor.prototype.register = function(callback) {
     var data = {
