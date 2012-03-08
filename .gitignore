@@ -1,4 +1,5 @@
 *~
 node_modules/
 npm-debug.log
-tests/assets/access.log
+collector/tests/assets/access.log
+aggregator/tests/assets/access.log
