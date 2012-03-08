@@ -5,9 +5,11 @@ var FileNotify = require('filenotify');
 
 module.exports = function() {
   var Collector = function Collector(files, url, key, callback) {
-    var watchers = {};
-    this.key = key;
     var that = this;
+    var watchers = {};
+
+    this.key = key;
+    this.files = files;
 
     var conn = this.conn = io.connect(url);
 
@@ -22,7 +24,8 @@ module.exports = function() {
         watchers[data.file] = new FileNotify(files[data.file]);
         watchers[data.file].on('data', function(lines) {
           that.conn.emit('lines', {
-            'data': Date.UTC,
+            'data': new Date().toUTCString(),
+            'watchable': data.file,
             'lines': lines
           });
         });
@@ -46,9 +49,14 @@ module.exports = function() {
   }; 
 
   Collector.prototype.register = function(callback) {
+    var files = {};
+    for(var f in this.files) {
+      files[f] = {};
+    }
+
     var data = {
       'hostname': os.hostname(),
-      'watchables': this.files,
+      'watchables': files,
       'key': this.key,
       'type': 'collector'
     };
