@@ -1,25 +1,21 @@
 
-
-var express = require('express');
 var io = require('socket.io');
 
 var Collector = require('./collector');
 var Monitor = require('./monitor');
 
 module.exports = function() {
-  var Server = function(port, key, callback) {
-    var server = this;
+  var Aggregator = function(key, app, callback) {
+    var aggregator = this;
     this.collectors = {};
     this.hostnames = [];
     this.monitors = {};
 
-    var app = express.createServer();
-
-    var ioOptions = {
+    var options = {
       'log level': 1
     };
-    var io = this.io = require('socket.io').listen(app, ioOptions);
 
+    var io = this.io = require('socket.io').listen(app, options);
     io.sockets.on('connection', function(socket) {
       // Allow registering
       socket.on('register', function(data, callback) {
@@ -33,9 +29,9 @@ module.exports = function() {
 
         // Add collector/monitor
         if(data.type === 'collector') {
-          server.addCollector(new Collector(server, data.hostname, data.watchables, socket));
+          aggregator.addCollector(new Collector(aggregator, data.hostname, data.watchables, socket));
         } else if(data.type === 'monitor') {
-          server.addMonitor(new Monitor(server, socket));
+          aggregator.addMonitor(new Monitor(aggregator, socket));
         } else {
           // @TODO need to send an error that can be handled instead
           callback('invalid type');
@@ -47,27 +43,21 @@ module.exports = function() {
 
       // @TODO unregistering
     });
-
-    app.listen(port, function() {
-      if(callback) {
-        callback(null, 'listening');
-      }
-    });
   };
 
-  Server.prototype.getWatchables = function() {
+  Aggregator.prototype.getWatchables = function() {
     var watchables = {
       'collectors': {}
     };
     
-    server.collectors.forEach(function(k, v) {
+    this.collectors.forEach(function(k, v) {
       watchables.collectors[v.hostname] = Object.keys(v.watchables);
     });
 
     return watchables;
   };
 
-  Server.prototype.addWatcher = function(hostname, watchable, monitor, callback) {
+  Aggregator.prototype.addWatcher = function(hostname, watchable, monitor, callback) {
     if(!this.hostnames[hostname]) {
       throw new Error('Unknown collector');
     }
@@ -75,7 +65,7 @@ module.exports = function() {
     this.hostnames[hostname].addWatcher(watchable, monitor, callback);
   };
 
-  Server.prototype.removeWatcher = function(hostname, watchable, monitor, callback) {
+  Aggregator.prototype.removeWatcher = function(hostname, watchable, monitor, callback) {
     if(!this.hostnames[hostname]) {
       throw new Error('Unknown collector');
     }
@@ -83,24 +73,24 @@ module.exports = function() {
     this.hostnames[hostname].removeWatcher(watchable, monitor, callback);
   };
 
-  Server.prototype.addCollector = function(collector) {
+  Aggregator.prototype.addCollector = function(collector) {
     this.collectors[collector.socket.id] = collector;
     this.hostnames[collector.hostname] = collector;
   };
 
-  Server.prototype.removeCollector = function(collector) {
+  Aggregator.prototype.removeCollector = function(collector) {
     // @TODO remove collector
   };
 
-  Server.prototype.addMonitor = function(monitor) {
+  Aggregator.prototype.addMonitor = function(monitor) {
     this.monitors[monitor.socket.id] = monitor;
   };
 
-  Server.prototype.removeMonitor = function(monitor) {
+  Aggregator.prototype.removeMonitor = function(monitor) {
     // @TODO remove monitor
   };
 
-  return Server;
+  return Aggregator;
 }();
 
 
