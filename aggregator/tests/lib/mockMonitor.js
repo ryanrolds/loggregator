@@ -50,26 +50,17 @@ module.exports = function() {
       }
 
       if(callback) {
-        callback(null, true);
+        callback(null, result);
       }
     });
   };
 
   MockMonitor.prototype.watch = function(watchable, callback) {
-    this.conn.emit('watch', watchable, function(error, result) {
-      if(error) {
-        if(callback) {
-          return callback(error);
-        } else {
-          throw error;
-        }
-      }
+    this.conn.emit('watch', watchable, callback);
+  };
 
-      if(callback) {
-        callback(null, true);
-      }
-    });
-
+  MockMonitor.prototype.unwatch = function(data, callback) {
+    this.conn.emit('unwatch', data, callback);
   };
 
   return MockMonitor;

@@ -29,7 +29,7 @@ describe('server', function() {
     };
 
     var callback = function(error, data) {
-      data.should.be.true;
+      data.should.equal('watching');
       done();
     };
 
@@ -38,11 +38,44 @@ describe('server', function() {
 
   it('should get data event for accesslog', function(done) {
     var listener = function(data) {
+      data.date.length.should.not.equal(0);
+      data.lines.should.equal('blah\n');
+      data.watchable.should.equal(Object.keys(watchables)[0]);
+      data.hostname.length.should.not.equal(0);
       done();
     };
 
     monitor.once('lines', listener);
 
+    testHelpers.writeToFile(watchables.accesslog, 'blah\n');
+  });
+
+  it('should be able to unlisten', function(done) {
+    var data = {
+      'hostname': os.hostname(),
+      'watchable': Object.keys(watchables)[0]
+    };
+
+    var callback = function(error, data) {
+      data.should.equal('unwatched');
+      done();
+    };
+
+    monitor.unwatch(data, callback);
+  });
+
+  it('should not get lines', function(done) {
+    // Listen for data/lines event
+    monitor.once('lines', function(data) {
+      throw new Error('we shouldnt hit this');
+    });
+
+    this.timeout(3000);
+    setTimeout(function() {
+      done();
+    }, 500);
+    
+    // Write to file and get the collector to fire an event
     testHelpers.writeToFile(watchables.accesslog, 'blah\n');
   });
 });

@@ -50,7 +50,7 @@ module.exports = function() {
 
     app.listen(port, function() {
       if(callback) {
-        callback(null, true);
+        callback(null, 'listening');
       }
     });
   };
@@ -73,6 +73,14 @@ module.exports = function() {
     }
 
     this.hostnames[hostname].addWatcher(watchable, monitor, callback);
+  };
+
+  Server.prototype.removeWatcher = function(hostname, watchable, monitor, callback) {
+    if(!this.hostnames[hostname]) {
+      throw new Error('Unknown collector');
+    }
+
+    this.hostnames[hostname].removeWatcher(watchable, monitor, callback);
   };
 
   Server.prototype.addCollector = function(collector) {

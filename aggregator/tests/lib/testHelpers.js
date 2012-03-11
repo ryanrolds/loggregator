@@ -37,7 +37,7 @@ module.exports.beforeAggregator = function(port, watchables,  key, callback) {
             throw error;
           }
 
-          result.should.be.true;
+          result.should.equal('registered');
           callback(null, aggregator, collector)
         });
       },

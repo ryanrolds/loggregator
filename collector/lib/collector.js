@@ -72,7 +72,7 @@ module.exports = function() {
       }
 
       if(callback) {
-        callback(null, true);
+        callback(null, result);
       }
     });
   };

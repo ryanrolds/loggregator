@@ -9,7 +9,7 @@ module.exports = (function() {
     var that = this;
     socket.on('lines', function(data) {
       that.watchables[data.watchable].watchers.forEach(function(monitor) {
-        data.hostname = this.hostname;
+        data.hostname = that.hostname;
         monitor.sendLines(data);
       });
     });
@@ -45,8 +45,25 @@ module.exports = (function() {
     }
   };
 
-  Collector.prototype.removeWacher = function(toUnwatch, monitor, callback) {
-    // @TODO unwatch
+  Collector.prototype.removeWatcher = function(toUnwatch, monitor, callback) {
+    if(!this.watchables[toUnwatch]) {
+      return callback('Unknown watchable');
+    }
+
+    var watchable = this.watchables[toUnwatch]
+
+    var pos = watchable.watchers.indexOf(monitor);
+    if(pos === -1) {
+      return callback(null, 'unwatched');
+    }
+
+    watchable.watchers.splice(pos, 1);
+
+    if(!watchable.watchers.length) {
+      this.stopWatching(toUnwatch, callback);
+    } else {
+      callback(null, 'unwatched');
+    }
   };
 
   Collector.prototype.startWatching = function(toWatch, callback) {
@@ -55,12 +72,20 @@ module.exports = (function() {
     };
 
     this.socket.emit('start', data, function(error, result) {
-      callback(null, true);
+      // @TODO dry this out - look at addWatcher()
+      callback(null, 'watching');
     });
   };
 
   Collector.prototype.stopWatching = function(toUnwatch, callback) {
-    // @TODO stop watching
+    var data = {
+      'file': toUnwatch
+    };
+
+    this.socket.emit('stop', data, function(error, result) {
+      // @TODO dry this out - look at removeWatcher()
+      callback(null, 'unwatched');
+    });
   };
 
   return Collector;
