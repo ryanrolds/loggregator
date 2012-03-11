@@ -24,7 +24,7 @@ module.exports = function() {
         watchers[data.file] = new FileNotify(files[data.file]);
         watchers[data.file].on('data', function(lines) {
           that.conn.emit('lines', {
-            'data': new Date().toUTCString(),
+            'date': new Date().toUTCString(),
             'watchable': data.file,
             'lines': lines
           });
