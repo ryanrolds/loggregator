@@ -26,14 +26,14 @@ describe('loggregator', function() {
 
     it('should accept start', function(done) {
       aggregator.start('accesslog', function(error, data) {
-        data.should.equal('started');
+        data.should.equal('watching');
         done();
       });
     });
 
     it('should send accesslog data', function(done) {
       // Listen for data/lines event
-      aggregator.once('lines', function(data) {
+      aggregator.once('data', function(data) {
         data.lines.should.equal('blah\n');
         done();
       });
@@ -44,21 +44,21 @@ describe('loggregator', function() {
 
     it('should accept stop', function(done) {
       aggregator.stop('accesslog', function(error, data) {
-        data.should.equal('stopped');
+        data.should.equal('unwatched');
         done();
       });
     });
 
     it('should not send accesslog data', function(done) {
       // Listen for data/lines event
-      aggregator.once('lines', function(data) {
+      aggregator.once('data', function(data) {
         throw new Error('we shouldnt hit this');
       });
 
       this.timeout(3000);
       setTimeout(function() {
         done();
-      }, 2000);
+      }, 500);
 
       // Write to file and get the collector to fire an event
       testHelpers.writeToFile(files.accesslog, 'blah\n');

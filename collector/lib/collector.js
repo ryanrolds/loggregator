@@ -19,11 +19,11 @@ module.exports = function() {
     });
 
     // Start monitoring of a file/stream
-    conn.on('start', function(data, callback) {
+    conn.on('watch', function(data, callback) {
       if(!watchers[data.file]) {
         watchers[data.file] = new FileNotify(files[data.file]);
         watchers[data.file].on('data', function(lines) {
-          that.conn.emit('lines', {
+          that.conn.emit('data', {
             'date': new Date().toUTCString(),
             'watchable': data.file,
             'lines': lines
@@ -32,18 +32,18 @@ module.exports = function() {
       }
 
       if(callback) {
-        callback(null, 'started')
+        callback(null, 'watching')
       }
     });
 
     // Stop monitoring of a file/stream
-    conn.on('stop', function(data, callback) {
+    conn.on('unwatch', function(data, callback) {
       if(watchers[data.file]) {
         watchers[data.file].destroy();
       }
 
       if(callback) {
-        callback(null, 'stopped')
+        callback(null, 'unwatched')
       }
     });
   }; 

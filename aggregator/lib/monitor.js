@@ -5,7 +5,7 @@ module.exports = (function() {
     this.socket = socket;
 
     var that = this;
-    socket.on('listwatchables', function(data, callback) {
+    socket.on('watchables', function(data, callback) {
       callback(null, that.parent.getWatchables());
     });
 
@@ -23,7 +23,7 @@ module.exports = (function() {
   };
 
   Monitor.prototype.sendLines = function(data) {
-    this.socket.emit('lines', data);
+    this.socket.emit('data', data);
   };
 
   return Monitor;

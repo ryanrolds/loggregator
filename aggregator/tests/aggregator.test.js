@@ -45,7 +45,7 @@ describe('server', function() {
       done();
     };
 
-    monitor.once('lines', listener);
+    monitor.once('data', listener);
 
     testHelpers.writeToFile(watchables.accesslog, 'blah\n');
   });
@@ -66,7 +66,7 @@ describe('server', function() {
 
   it('should not get lines', function(done) {
     // Listen for data/lines event
-    monitor.once('lines', function(data) {
+    monitor.once('data', function(data) {
       throw new Error('we shouldnt hit this');
     });
 

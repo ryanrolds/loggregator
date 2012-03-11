@@ -25,8 +25,8 @@ module.exports = function() {
       // @TODO need to handle disconnect
     });
 
-    conn.on('lines', function(data) {
-      that.emit('lines', data);
+    conn.on('data', function(data) {
+      that.emit('data', data);
     });
   };
 

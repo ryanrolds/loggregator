@@ -19,8 +19,8 @@ module.exports = function() {
         callback('registered');
       });
 
-      socket.on('lines', function(data) {
-        that.emit('lines', data);
+      socket.on('data', function(data) {
+        that.emit('data', data);
       });
     });
   };
@@ -32,7 +32,7 @@ module.exports = function() {
       'file': topic
     };
 
-    this.socket.emit('start', payload, function(error, data) {
+    this.socket.emit('watch', payload, function(error, data) {
       callback(null, data);
     });
   };
@@ -42,7 +42,7 @@ module.exports = function() {
       'file': topic
     };
 
-    this.socket.emit('stop', payload, function(error, data) {
+    this.socket.emit('unwatch', payload, function(error, data) {
       callback(null, data);
     });
   };

@@ -7,7 +7,7 @@ module.exports = (function() {
     this.socket = socket;
 
     var that = this;
-    socket.on('lines', function(data) {
+    socket.on('data', function(data) {
       that.watchables[data.watchable].watchers.forEach(function(monitor) {
         data.hostname = that.hostname;
         monitor.sendLines(data);
@@ -71,7 +71,7 @@ module.exports = (function() {
       'file': toWatch
     };
 
-    this.socket.emit('start', data, function(error, result) {
+    this.socket.emit('watch', data, function(error, result) {
       // @TODO dry this out - look at addWatcher()
       callback(null, 'watching');
     });
@@ -82,7 +82,7 @@ module.exports = (function() {
       'file': toUnwatch
     };
 
-    this.socket.emit('stop', data, function(error, result) {
+    this.socket.emit('unwatch', data, function(error, result) {
       // @TODO dry this out - look at removeWatcher()
       callback(null, 'unwatched');
     });
