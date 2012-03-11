@@ -9,7 +9,6 @@ var watchables = {
   'accesslog': __dirname + '/assets/access.log'
 };
 
-
 describe('server', function() {
   var aggregator;
   var collector;
