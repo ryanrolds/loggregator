@@ -1,5 +1,6 @@
 
 var express = require('express');
+var expressHogan = require('express-hogan.js');
 
 var Aggregator = require('./aggregator');
 
@@ -15,6 +16,11 @@ var Server = function(port, key, namespace, callback) {
   }
 
   var app = this.app = express.createServer();
+  app.set('view options', {
+    layout: false
+  });
+  app.register('.html', expressHogan);
+
   var agg = new Aggregator(app, key, namespace);
 
   // Routes

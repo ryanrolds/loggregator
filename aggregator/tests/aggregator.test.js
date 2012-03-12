@@ -1,5 +1,7 @@
 
+var assert = require('assert');
 var os = require('os');
+var Browser = require("zombie");
 
 var testHelpers = require('./lib/testHelpers');
 
@@ -11,10 +13,13 @@ var watchables = {
 };
 
 describe('aggregator', function() {
+  var browser;
   var aggregator;
   var collector;
   var monitor;
   before(function(done) {
+    browser = new Browser();
+
     testHelpers.beforeAggregator(port, watchables, key, namespace, function(error, agg, coll, mon) {
       aggregator = agg;
       collector = coll;
@@ -90,5 +95,16 @@ describe('aggregator', function() {
     
     // Write to file and get the collector to fire an event
     testHelpers.writeToFile(watchables.accesslog, 'blah\n');
+  });
+
+  describe('client', function() {
+    it('should serve /<namespace>/client', function(done) {
+      var url = ['http://localhost:', port, '/', namespace, '/client'].join('');
+      browser.visit(url, function(error, browser, status) {
+        assert.equal(error, null);
+        status.should.equal(200);
+        done();
+      });
+    });
   });
 });

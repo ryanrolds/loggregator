@@ -8,12 +8,15 @@
   },
   "dependencies": {
     "express": "",
-    "socket.io": ""
+    "socket.io": "",
+    "hogan.js": "",
+    "express-hogan.js": ""
   },
   "devDependencies": {
     "mocha": "",
     "should": "",
     "async": "",
-    "socket.io-client": ""
+    "socket.io-client": "",
+    "zombie": ""
   }
 }
