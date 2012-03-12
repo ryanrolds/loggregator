@@ -4,8 +4,8 @@ var Monitor = function(parent, socket) {
   this.socket = socket;
 
   var that = this;
-  socket.on('watchables', function(data, callback) {
-    callback(null, that.parent.getWatchables());
+  socket.on('watchables', function(callback) {
+    callback(null, that.parent.getWatchables(callback));
   });
 
   socket.on('watch', function(data, callback) {

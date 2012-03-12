@@ -62,6 +62,10 @@ MockMonitor.prototype.unwatch = function(data, callback) {
   this.conn.emit('unwatch', data, callback);
 };
 
+MockMonitor.prototype.watchables = function(callback) {
+  this.conn.emit('watchables', callback);
+};
+
 MockMonitor.prototype.disconnect = function() {
   this.conn.disconnect();
 };

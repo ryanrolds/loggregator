@@ -7,7 +7,7 @@ var Monitor = require('./monitor');
 var Aggregator = function(app, key, namespace, callback) {
   var aggregator = this;
   this.collectors = {};
-  this.hostnames = [];
+  this.hostnames = {};
   this.monitors = {};
 
   var options = {
@@ -44,16 +44,16 @@ var Aggregator = function(app, key, namespace, callback) {
   });
 };
 
-Aggregator.prototype.getWatchables = function() {
+Aggregator.prototype.getWatchables = function(callback) {
   var watchables = {
     'collectors': {}
   };
-  
-  this.collectors.forEach(function(k, v) {
-    watchables.collectors[v.hostname] = Object.keys(v.watchables);
-  });
 
-  return watchables;
+  for(var k in this.hostnames) {
+    watchables.collectors[k] = Object.keys(this.hostnames[k].watchables);
+  };
+
+  callback(null, watchables);
 };
 
 Aggregator.prototype.addWatcher = function(hostname, watchable, monitor, callback) {

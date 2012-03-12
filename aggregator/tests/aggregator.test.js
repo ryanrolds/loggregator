@@ -25,7 +25,15 @@ describe('aggregator', function() {
 
   after(function(done) {
     testHelpers.afterAggregator(aggregator, collector, monitor, done);
-  }); 
+  });
+
+  it('should support getting watchables', function(done) {
+    monitor.watchables(function(error, data) {
+      data.collectors.should.be.object;
+      Object.keys(data.collectors).length.should.not.equal(0);
+      done();
+    });
+  });
 
   it('should support watching accesslog', function(done) {
     var data = {
