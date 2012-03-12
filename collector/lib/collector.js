@@ -87,5 +87,9 @@ module.exports = function() {
     });
   };
 
+  Collector.prototype.disconnect = function() {
+    this.conn.disconnect();
+  };
+
   return Collector;
 }();

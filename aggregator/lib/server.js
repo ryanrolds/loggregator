@@ -15,7 +15,7 @@ module.exports = (function() {
       namespace = defaultNamespace;
     }
     
-    var app = express.createServer();
+    var app = this.app = express.createServer();
     var agg = new Aggregator(app, key, namespace);
 
     // Routes
@@ -23,6 +23,10 @@ module.exports = (function() {
     require('./routes/client')(app, namespace);
 
     app.listen(port, callback);
+  };
+
+  Server.prototype.close = function() {
+    this.app.close();
   };
 
   return Server;

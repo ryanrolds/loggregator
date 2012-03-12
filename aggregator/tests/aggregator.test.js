@@ -23,6 +23,10 @@ describe('aggregator', function() {
     });
   });
 
+  after(function(done) {
+    testHelpers.afterAggregator(aggregator, collector, monitor, done);
+  }); 
+
   it('should support watching accesslog', function(done) {
     var data = {
       'hostname': os.hostname(),

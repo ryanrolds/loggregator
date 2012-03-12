@@ -63,5 +63,9 @@ module.exports = function() {
     this.conn.emit('unwatch', data, callback);
   };
 
+  MockMonitor.prototype.disconnect = function() {
+    this.conn.disconnect();
+  };
+
   return MockMonitor;
 }();

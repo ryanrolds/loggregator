@@ -22,6 +22,13 @@ module.exports.writeToFile = function(file, text) {
   });
 };
 
+module.exports.afterAggregator = function(agg, coll, mon, callback) {
+  mon.disconnect();
+  coll.disconnect();
+  agg.close();
+  callback();
+};
+
 module.exports.beforeAggregator = function(port, watchables, key, namespace, callback) {
   var url = ['http://localhost:', port, '/', namespace].join('');
   async.waterfall(
