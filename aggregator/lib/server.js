@@ -5,31 +5,27 @@ var Aggregator = require('./aggregator');
 
 var defaultNamespace = 'loggregator';
 
-module.exports = (function() {
-  var Server = function(port, key, namespace, callback) {
-    // Default namespace to loggregator if not defined
-    if(typeof namespace === 'function') {
-      callback = namespace;
-      namespace = defaultNamespace;
-    } else if(!namespace) {
-      namespace = defaultNamespace;
-    }
-    
-    var app = this.app = express.createServer();
-    var agg = new Aggregator(app, key, namespace);
+var Server = function(port, key, namespace, callback) {
+  // Default namespace to loggregator if not defined
+  if(typeof namespace === 'function') {
+    callback = namespace;
+    namespace = defaultNamespace;
+  } else if(!namespace) {
+    namespace = defaultNamespace;
+  }
 
-    // Routes
-    require('./routes/login')(app, namespace);
-    require('./routes/client')(app, namespace);
+  var app = this.app = express.createServer();
+  var agg = new Aggregator(app, key, namespace);
 
-    app.listen(port, callback);
-  };
+  // Routes
+  require('./routes/login')(app, namespace);
+  require('./routes/client')(app, namespace);
 
-  Server.prototype.close = function() {
-    this.app.close();
-  };
+  app.listen(port, callback);
+};
 
-  return Server;
-})();
+Server.prototype.close = function() {
+  this.app.close();
+};
 
-
+module.exports = Server;
