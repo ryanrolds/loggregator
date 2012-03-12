@@ -5,16 +5,17 @@ var testHelpers = require('./lib/testHelpers');
 
 var port = 9069;
 var key = 'foobarbaz';
+var namespace = 'loggregator';
 var watchables = {
   'accesslog': __dirname + '/assets/access.log'
 };
 
-describe('server', function() {
+describe('aggregator', function() {
   var aggregator;
   var collector;
   var monitor;
   before(function(done) {
-    testHelpers.beforeAggregator(port, watchables, key, function(error, agg, coll, mon) {
+    testHelpers.beforeAggregator(port, watchables, key, namespace, function(error, agg, coll, mon) {
       aggregator = agg;
       collector = coll;
       monitor = mon;

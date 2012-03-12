@@ -22,12 +22,12 @@ module.exports.writeToFile = function(file, text) {
   });
 };
 
-module.exports.beforeAggregator = function(port, watchables,  key, callback) {
-  var url = 'http://localhost:' + port;
+module.exports.beforeAggregator = function(port, watchables, key, namespace, callback) {
+  var url = ['http://localhost:', port, '/', namespace].join('');
   async.waterfall(
     [
       function(callback) {
-        var aggregator = new Aggregator(port, key, function() {
+        var aggregator = new Aggregator(port, key, namespace, function() {
           callback(null, aggregator);
         });
       },

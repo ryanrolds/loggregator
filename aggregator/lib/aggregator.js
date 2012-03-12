@@ -5,7 +5,7 @@ var Collector = require('./collector');
 var Monitor = require('./monitor');
 
 module.exports = function() {
-  var Aggregator = function(key, app, callback) {
+  var Aggregator = function(app, key, namespace, callback) {
     var aggregator = this;
     this.collectors = {};
     this.hostnames = [];
@@ -15,8 +15,8 @@ module.exports = function() {
       'log level': 1
     };
 
-    var io = this.io = require('socket.io').listen(app, options);
-    io.sockets.on('connection', function(socket) {
+    this.io = io.listen(app, options);
+    this.io.of('/' + namespace).on('connection', function(socket) {
       // Allow registering
       socket.on('register', function(data, callback) {
         // Check the key
