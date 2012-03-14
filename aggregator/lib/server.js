@@ -16,10 +16,12 @@ var Server = function(port, key, namespace, callback) {
   }
 
   var app = this.app = express.createServer();
+  app.set('views', __dirname + '/views');
   app.set('view options', {
     layout: false
   });
-  app.register('.html', expressHogan);
+  app.register('.hogan', expressHogan);
+  app.use(express.static(__dirname + '/public'));
 
   var agg = new Aggregator(app, key, namespace);
 

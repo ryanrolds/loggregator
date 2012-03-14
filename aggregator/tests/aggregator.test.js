@@ -106,5 +106,14 @@ describe('aggregator', function() {
         done();
       });
     });
+
+    it('should serve /js/client.js', function(done) {
+      var url = ['http://localhost:', port, '/js/client.js'].join('');
+      browser.visit(url, function(error, browser, status) {
+        assert.equal(error, null);
+        status.should.equal(200);
+        done();
+      });
+    });
   });
 });
