@@ -26,8 +26,8 @@ var Server = function(port, key, namespace, callback) {
   var agg = new Aggregator(app, key, namespace);
 
   // Routes
-  require('./routes/login')(app, namespace);
-  require('./routes/client')(app, namespace);
+  require('./routes/login')(app, key, namespace);
+  require('./routes/client')(app, key, namespace);
 
   app.listen(port, callback);
 };
