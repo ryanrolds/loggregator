@@ -3,3 +3,4 @@ node_modules/
 npm-debug.log
 collector/tests/assets/access.log
 aggregator/tests/assets/access.log
+example/assets/access.log
