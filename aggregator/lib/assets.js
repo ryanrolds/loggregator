@@ -6,7 +6,8 @@ module.exports = function(assetPath, namespace) {
       'path': assetPath,
       'dataType': 'javascript',
       'files': [
-        'client.js'
+        'monitor.js',
+        'load.js'
       ]
     },
     'jsquery': {

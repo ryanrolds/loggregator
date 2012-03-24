@@ -4,13 +4,14 @@
   "author": "Ryan Olds <ryanrolds@gmail.com>",
   "main": "./index",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -R spec -r should tests/*.test.js"
+    "test": "./node_modules/.bin/mocha --ignore-leaks -R spec -r should tests/*.test.js"
   },
   "dependencies": {
     "express": "",
     "socket.io": "",
     "hogan.js": "",
-    "express-hogan.js": ""
+    "express-hogan.js": "",
+    "connect-assetmanager": ""
   },
   "devDependencies": {
     "mocha": "",

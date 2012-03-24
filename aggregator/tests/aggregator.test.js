@@ -107,8 +107,8 @@ describe('aggregator', function() {
       });
     });
 
-    it('should serve /js/client.js', function(done) {
-      var url = ['http://localhost:', port, '/js/client.js'].join('');
+    it('should serve /<namespace>/js/client.js', function(done) {
+      var url = ['http://localhost:', port, '/' + namespace + '/client.js'].join('');
       browser.visit(url, function(error, browser, status) {
         assert.equal(error, null);
         status.should.equal(200);

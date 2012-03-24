@@ -1,6 +1,7 @@
 
 var express = require('express');
 var expressHogan = require('express-hogan.js');
+var assetManager = require('connect-assetmanager');
 
 var Aggregator = require('./aggregator');
 
@@ -15,13 +16,15 @@ var Server = function(port, key, namespace, callback) {
     namespace = defaultNamespace;
   }
 
+  var assets = require('./assets')(__dirname + '/public/js/', namespace);
+
   var app = this.app = express.createServer();
   app.set('views', __dirname + '/views');
   app.set('view options', {
     layout: false
   });
   app.register('.hogan', expressHogan);
-  app.use(express.static(__dirname + '/public'));
+  app.use(assetManager(assets));
 
   var agg = new Aggregator(app, key, namespace);
 
