@@ -1,0 +1,30 @@
+
+#list {
+    width: 200px;
+    position: absolute;
+    right: 0px;
+}
+
+#list .collector {
+    height: 20px;
+    background-color: #EEE;
+    font-size: 18px;
+    padding: 5px;
+}
+
+#list .watchables {
+    font-size: 14px;
+    margin-left: 15px;
+}
+
+#list .watchable {
+    padding: 5px 0 5px 0px;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+#messages {
+
+}

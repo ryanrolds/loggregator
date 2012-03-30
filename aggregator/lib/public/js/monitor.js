@@ -1,6 +1,7 @@
 
 var Monitor = function(url) {
   this.url = url;
+  this.ui = {};
 
   this.setupUI();
   this.setupSocketIO();
@@ -9,13 +10,12 @@ var Monitor = function(url) {
 Monitor.prototype.setupUI = function() {
   var list = document.createElement('div');
   list.id = 'list';
+  this.ui.list = list;
 
   var messages = document.createElement('div');
   messages.id = 'messages';
 
   var main = document.getElementById('loggregator');
-  main.id = 'loggregator';
-
   main.appendChild(list);
   main.appendChild(messages);
 };
@@ -36,15 +36,34 @@ Monitor.prototype.setupSocketIO = function() {
       }
 
       socket.emit('watchables', function(error, response) {
-        console.log(response);
+        console.log(error, response);
+        for(var k in response.collectors) {
+          that.addCollector(k, response.collectors[k]);
+        };
       });
     });
   });
+
+  this.socket = socket;
 };
 
-Monitor.prototype.addCollector = function(collector) {
-  
+Monitor.prototype.addCollector = function(id, watchables) {
+  var collector = new Collector(this, id, watchables);
+  this.ui.list.appendChild(collector.createUI());
 };
 
+Monitor.prototype.watch = function(id, watchable) {
+  var data = {
+    'hostname': id,
+    'watchable': watchable
+  };
+  this.socket.emit('watch', data);
+};
 
-
+Monitor.prototype.unwatch = function(id, watchable) {
+  var data = {
+    'hostname': id,
+    'watchable': watchable
+  };
+  this.socket.emit('unwatch');
+};

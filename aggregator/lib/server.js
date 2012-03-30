@@ -16,7 +16,7 @@ var Server = function(port, key, namespace, callback) {
     namespace = defaultNamespace;
   }
 
-  var assets = require('./assets')(__dirname + '/public/js/', namespace);
+  var assets = require('./assets')(__dirname + '/public/', namespace);
 
   var app = this.app = express.createServer();
   app.set('views', __dirname + '/views');
