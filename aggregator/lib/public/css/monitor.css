@@ -6,6 +6,10 @@
 }
 
 #list .collector {
+
+}
+
+#list .collector > .name {
     height: 20px;
     background-color: #EEE;
     font-size: 18px;
@@ -18,7 +22,7 @@
 }
 
 #list .watchable {
-    padding: 5px 0 5px 0px;
+    padding: 5px 0 5px 5px;
 }
 
 .clickable {

@@ -16,7 +16,6 @@ Collector.prototype.createUI = function() {
   name.appendChild(document.createTextNode(this.id));
 
   $(name).click({'collector': this}, function(e) {
-    console.log(e.data);
     e.data.collector.toggleWatchables();
   });
 
@@ -66,11 +65,13 @@ Collector.prototype.createWatchable = function(id) {
     var watchable = e.data.watchable;
     var pos = $.inArray(watchable, collector.active);
     if(pos === -1) {
-      collector.active.splice(pos, 1);
-      e.data.collector.watch(e.data.watchable);
-    } else {
       collector.active.push(watchable);
-      e.data.collector.unwatch(e.data.watchable);
+      collector.watch(e.data.watchable);
+      e.currentTarget.parentNode.style.backgroundColor = collector.parent.getColor();
+    } else {
+      collector.active.splice(pos, 1);
+      collector.unwatch(e.data.watchable);
+      e.currentTarget.parentNode.style.backgroundColor = 'transparent';
     }
   });
 
