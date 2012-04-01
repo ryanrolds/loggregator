@@ -1,34 +1,35 @@
 
-#list {
+#messages {
+
+}
+
+#collectors {
     width: 200px;
-    position: absolute;
-    right: 0px;
+    float: right;
+    height: 100%;
+    margin-left: 10px;
 }
 
-#list .collector {
+.collector {
 
 }
 
-#list .collector > .name {
+.collector > .name {
     height: 20px;
     background-color: #EEE;
     font-size: 18px;
     padding: 5px;
 }
 
-#list .watchables {
+.watchables {
     font-size: 14px;
     margin-left: 15px;
 }
 
-#list .watchable {
+.watchable {
     padding: 5px 0 5px 5px;
 }
 
 .clickable {
     cursor: pointer;
-}
-
-#messages {
-
 }

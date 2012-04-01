@@ -2,6 +2,7 @@
 var os = require('os');
 var io = require('socket.io-client');
 var FileNotify = require('filenotify');
+var LoremIpStream = require('loremipstream');
 
 var Collector = function Collector(files, url, key, callback) {
   var that = this;
@@ -19,8 +20,21 @@ var Collector = function Collector(files, url, key, callback) {
 
   // Start monitoring of a file/stream
   conn.on('watch', function(data, callback) {
+    console.log('watch', arguments);
     if(!watchers[data.file]) {
-      watchers[data.file] = new FileNotify(files[data.file]);
+      var file = files[data.file];
+      if(file !== '__loremipsum') {
+        watchers[data.file] = new FileNotify(files[file]);
+      } else { 
+        var lorem = new LoremIpStream({
+          dataSize: 100,
+          dataInterval: 1000
+        });
+        lorem.setEncoding('utf8');
+
+        watchers[data.file] = lorem;
+      }
+
       watchers[data.file].on('data', function(lines) {
         that.conn.emit('data', {
           'date': new Date().toUTCString(),
@@ -39,6 +53,7 @@ var Collector = function Collector(files, url, key, callback) {
   conn.on('unwatch', function(data, callback) {
     if(watchers[data.file]) {
       watchers[data.file].destroy();
+      delete watchers[data.file];
     }
 
     if(callback) {

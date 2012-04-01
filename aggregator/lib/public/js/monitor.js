@@ -2,22 +2,28 @@
 var Monitor = function(url) {
   this.url = url;
   this.ui = {};
+  this.collectors = {};
 
   this.setupUI();
   this.setupSocketIO();
 };
 
 Monitor.prototype.setupUI = function() {
-  var list = document.createElement('div');
-  list.id = 'list';
-  this.ui.list = list;
+  var collectors = document.createElement('div');
+  collectors.id = 'collectors';
+  this.ui.collectors = collectors;
 
   var messages = document.createElement('div');
   messages.id = 'messages';
+  this.ui.messages = messages;
+
+  var clear = document.createElement('div');
+  clear.style.clear = 'both';
 
   var main = document.getElementById('loggregator');
-  main.appendChild(list);
+  main.appendChild(collectors);
   main.appendChild(messages);
+  main.appendChild(clear);
 };
 
 Monitor.prototype.setupSocketIO = function() {
@@ -41,6 +47,30 @@ Monitor.prototype.setupSocketIO = function() {
         };
       });
     });
+
+    socket.on('data', function(data) {
+      var collector = that.getCollector(data.hostname);
+
+      var message = document.createElement('div');
+      message.className = 'message';
+      message.style.color = collector.active[data.watchable];
+
+      var time = document.createElement('span');
+      time.className = 'time';
+      time.appendChild(document.createTextNode(data.date));
+      var host = document.createElement('span');
+      host.className = 'hostname';
+      host.appendChild(document.createTextNode(['[', data.hostname, ']'].join('')));
+      var log = document.createElement('span');
+      log.className = 'log';
+      log.appendChild(document.createTextNode(data.lines));
+
+      message.appendChild(time);
+      message.appendChild(host);
+      message.appendChild(log);
+
+      that.ui.messages.appendChild(message);
+    });
   });
 
   this.socket = socket;
@@ -48,7 +78,14 @@ Monitor.prototype.setupSocketIO = function() {
 
 Monitor.prototype.addCollector = function(id, watchables) {
   var collector = new Collector(this, id, watchables);
-  this.ui.list.appendChild(collector.createUI());
+  this.collectors[id] = collector;
+
+  this.ui.collectors.appendChild(collector.createUI());
+};
+
+Monitor.prototype.getCollector = function(id) {
+  var c = this.collectors[id];
+  return (c) ? c : undefined;
 };
 
 Monitor.prototype.watch = function(id, watchable) {
@@ -56,8 +93,10 @@ Monitor.prototype.watch = function(id, watchable) {
     'hostname': id,
     'watchable': watchable
   };
-  this.socket.emit('watch', data, function() {
-
+  this.socket.emit('watch', data, function(error, response) {
+    if(error) {
+      throw new Error(error);
+    }
   });
 };
 
@@ -66,8 +105,10 @@ Monitor.prototype.unwatch = function(id, watchable) {
     'hostname': id,
     'watchable': watchable
   };
-  this.socket.emit('unwatch', data, function() {
-
+  this.socket.emit('unwatch', data, function(error, response) {
+    if(error) {
+      throw new Error(error);
+    }
   });
 };
 

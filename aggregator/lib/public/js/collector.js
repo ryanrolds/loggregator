@@ -4,7 +4,7 @@ var Collector = function(monitor, id, watchables) {
   this.id = id;
   this.watchables = watchables;
   this.ui = {};
-  this.active = [];
+  this.active = {};
 };
 
 Collector.prototype.createUI = function() {
@@ -63,13 +63,13 @@ Collector.prototype.createWatchable = function(id) {
   $(item).click({'collector': this, 'watchable': id}, function(e) {
     var collector = e.data.collector;
     var watchable = e.data.watchable;
-    var pos = $.inArray(watchable, collector.active);
-    if(pos === -1) {
-      collector.active.push(watchable);
+
+    if(!collector.active[watchable]) {
+      collector.active[watchable] = collector.parent.getColor();
       collector.watch(e.data.watchable);
-      e.currentTarget.parentNode.style.backgroundColor = collector.parent.getColor();
+      e.currentTarget.parentNode.style.backgroundColor = collector.active[watchable];
     } else {
-      collector.active.splice(pos, 1);
+      delete collector.active[watchable];
       collector.unwatch(e.data.watchable);
       e.currentTarget.parentNode.style.backgroundColor = 'transparent';
     }

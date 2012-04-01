@@ -49,7 +49,7 @@ Collector.prototype.removeWatcher = function(toUnwatch, monitor, callback) {
     return callback('Unknown watchable');
   }
 
-  var watchable = this.watchables[toUnwatch]
+  var watchable = this.watchables[toUnwatch];
 
   var pos = watchable.watchers.indexOf(monitor);
   if(pos === -1) {

@@ -9,7 +9,8 @@
   "dependencies": {
     "async": "",
     "socket.io-client": "",
-    "filenotify": ""
+    "filenotify": "",
+    "loremipstream": ""
   },
   "devDependencies": {
     "mocha": "",
