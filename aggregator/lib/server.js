@@ -16,7 +16,7 @@ var Server = function(port, key, namespace, callback) {
     namespace = defaultNamespace;
   }
 
-  var assets = require('./assets')(__dirname + '/public/', namespace);
+  //var assets = require('./assets')(__dirname + '/public/', namespace);
 
   var app = this.app = express.createServer();
   app.set('views', __dirname + '/views');
@@ -24,7 +24,7 @@ var Server = function(port, key, namespace, callback) {
     layout: false
   });
   app.register('.hogan', expressHogan);
-  app.use(assetManager(assets));
+  //app.use(assetManager(assets));
 
   var agg = new Aggregator(app, key, namespace);
 
