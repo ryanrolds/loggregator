@@ -1,17 +1,29 @@
 
 requirejs.config({
   'paths': {
-    'underscore': 'js/libs/underscore/underscore.js'
-    'backbone': 'js/libs/backbone/backbone.js'
+    'underscore': 'libs/underscore/underscore',
+    'backbone': 'libs/backbone/backbone',
+    'hogan': 'libs/hogan/hogan-2.0.0',
+    'jquery': 'libs/jquery/jquery-1.7.2',
+    'text': 'libs/require/text'
   },
   'shim': {
+    'hogan': {
+      'exports': 'Hogan'
+    },
+    'jquery': {
+      'exports': '$'
+    },
+    'underscore': {
+      'exports': '_'
+    },
     'backbone': {
-      'deps': ['underscore'],
-      'exports': Backbone
+      'deps': ['underscore', 'jquery'],
+      'exports': 'Backbone'
     }
   }
 });
 
-require(['app.js'], function(_, backbone, App) {
-  var app = new App('loggregator');
+requirejs(['app'], function(App) {
+  var app = new App({'el': document.getElementById('loggregator')});
 });
